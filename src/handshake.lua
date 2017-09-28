@@ -106,8 +106,32 @@ function _M.requestAS(conf)
 end
 
 
-function _M.requestAP(conf)
-    -- A requisição de requestAP deve vir pronta?
+function _M.requestAP(conf)    
+    -- Call req_read_body to read the request body first
+    req_read_body()
+    local body = req_get_body_data()
+    local content_length = (body and #body) or 0
+    if not body then
+        return
+    end
+    local body_string = util.hex_dump(body)
+    
+    local sessionId = string.sub(body_string, 1, 32)
+    local transactionId = string.sub(body_string, 33, 64)
+    local request = string.sub(body_string, 65)
+    
+    local request_table = {}
+    request_table["sessionId"] = sessionId
+    request_table["transactionId"] = transactionId
+    request_table["request"] = request
+    table.foreach(request_table, print)
+    
+    local request_string = json.encode(request_table)
+  
+    req_set_body_data(request_string)
+    req_set_header(CONTENT_LENGTH, #request_string)
+    ngx.req.set_header("Content-Type", "application/json")
+    
 end
 
 return _M

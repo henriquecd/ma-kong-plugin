@@ -26,23 +26,15 @@ local function get_content_type(content_type)
 end
 
 function _M.run(conf)
-
-    util.printToFile(debug.getinfo(1).currentline,'Inicio de access.run()')
-
     local content_type_value = req_get_headers()[CONTENT_TYPE]
     local content_type = get_content_type(content_type_value)
     --client library will send content_type = application/x-www-form-urlencoded
-    util.printToFile(debug.getinfo(1).currentline, content_type_value)
 --    if content_type == nil or content_type ~= "x-www-form-urlencoded" then
 --        return
 --    end  
 
     -- Obtem o prefixo usado no endereço (apenas para log)
     local request_uri = ngx.var.request_uri
---    if pl_stringx.endswith(request_uri, "/") then
---        request_uri = request_uri:sub(1, request_uri:len() - 1)
---    end
-    util.printToFile(debug.getinfo(1).currentline,'Received uri: ' .. request_uri)
         
     -- Decide if request is:
     -- --registerComponent
