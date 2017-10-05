@@ -7,7 +7,7 @@ local body = ngx.req.read_body
 local string_find = string.find
 local pl_stringx = require "pl.stringx"
 local responses = require "kong.tools.responses"
-local socket = require "socket" 
+local socket = require "socket"
 local ltn12 = require "ltn12"
 
 
@@ -28,27 +28,22 @@ end
 function _M.run(conf)
     local content_type_value = req_get_headers()[CONTENT_TYPE]
     local content_type = get_content_type(content_type_value)
-    --client library will send content_type = application/x-www-form-urlencoded
---    if content_type == nil or content_type ~= "x-www-form-urlencoded" then
---        return
---    end  
 
     -- Obtem o prefixo usado no endereço (apenas para log)
     local request_uri = ngx.var.request_uri
-        
+
     -- Decide if request is:
     -- --registerComponent
     -- --unregisterComponent
     -- --requestAS
     -- --requestAP
-    -- --API request
-    
+
     if(string.match(request_uri, "unregisterComponent")) then
         handshake.unregisterComponent(conf)
 
     elseif(string.match(request_uri, "registerComponent")) then
         handshake.registerComponent(conf)
-    
+
     elseif(string.match(request_uri, "requestAS")) then
         handshake.requestAS(conf)
 

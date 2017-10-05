@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-###### Registrando API
+###### Registering APIs
 
 # RegisterComponent
 (curl http://localhost:8001/apis -s -S -X POST \
@@ -51,7 +51,7 @@ PAYLOAD
 }
 PAYLOAD
 
-###### Configurando plugin
+###### Configuring plugin
 
 curl -i -X POST \
     --url http://localhost:8001/apis/kerberos_registerComponent/plugins/ \
