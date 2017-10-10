@@ -18,8 +18,43 @@ local util = require "kong.plugins.mutualauthentication.util"
 function unregisterComponent(conf)
 end
 
+function _M.loadApp(conf)
+    local app_id = conf.app_id
+    local app_key = conf.app_key
+
+    if #app_id ~= #app_key then
+        return
+    end
+
+    for i=1, #app_id do
+        local component_table = {}
+        component_table["id"] = app_id[i]
+        component_table["key"] = app_key[i]
+
+        local request = util.transform_json_body(conf, "", component_table)
+
+        local response_body = { }
+        local post_url = conf.kerberos_url -- TODO passar essa variável no request
+
+	    local res, code, response_headers, status = http.request
+	    {
+	        -- TODO Passar url como variável
+	        url = "http://kerberos:8080/kerberosintegration/rest/registry/registerComponent",
+	        method = "POST",
+		    headers =
+		    {
+		    ["Content-Type"] = "application/json",
+            ["Content-Length"] = request:len()
+		    },
+            source = ltn12.source.string(request),
+            sink = ltn12.sink.table(response_body),
+	    }
+	    util.printResponse(res, code, response_headers, status, source, sink, response_body)
+    end
+end
+
 function _M.registerComponent(conf)
-    
+
     uuid.randomseed(socket.gettime()*10000)
     -- Generates application id
     local appId = uuid()
@@ -33,14 +68,14 @@ function _M.registerComponent(conf)
     local component_table = {}
     component_table["id"] = appId
     component_table["key"] = appKey
-    
+
     -- Call req_read_body to read the request body first
     req_read_body()
     local body = req_get_body_data()
     local content_length = (body and #body) or 0
-    
+
     body = util.transform_json_body(conf, body, component_table)
-  
+
     req_set_body_data(body)
     req_set_header(CONTENT_LENGTH, #body)
 
@@ -70,11 +105,11 @@ function _M.requestAS(conf)
     -- TODO Stores sessionId and transactionId
 
     -- Registers session
-    local payload = [[ {"sessionId":"]] .. sessionId .. [[","transactionId":"]] 
+    local payload = [[ {"sessionId":"]] .. sessionId .. [[","transactionId":"]]
         .. transactionId .. [["} ]]
     local response_body = { }
     local post_url = conf.kerberos_url -- TODO passar essa variável no request
-    
+
 	local res, code, response_headers, status = http.request
 	{
 	    -- TODO Passar url como variável
@@ -94,19 +129,19 @@ function _M.requestAS(conf)
     local session_table = {}
     session_table["sessionId"] = sessionId
     session_table["transactionId"] = transactionId
-    
+
     -- Inserts sessionId and TransformationId into original request
     session_table["request"] = body_string
     table.foreach(session_table, print)
     local session_string = json.encode(session_table)
-  
+
     req_set_body_data(session_string)
     req_set_header(CONTENT_LENGTH, #session_string)
     ngx.req.set_header("Content-Type", "application/json")
 end
 
 
-function _M.requestAP(conf)    
+function _M.requestAP(conf)
     -- Call req_read_body to read the request body first
     req_read_body()
     local body = req_get_body_data()
@@ -115,23 +150,23 @@ function _M.requestAP(conf)
         return
     end
     local body_string = util.hex_dump(body)
-    
+
     local sessionId = string.sub(body_string, 1, 32)
     local transactionId = string.sub(body_string, 33, 64)
     local request = string.sub(body_string, 65)
-    
+
     local request_table = {}
     request_table["sessionId"] = sessionId
     request_table["transactionId"] = transactionId
     request_table["request"] = request
     table.foreach(request_table, print)
-    
+
     local request_string = json.encode(request_table)
-  
+
     req_set_body_data(request_string)
     req_set_header(CONTENT_LENGTH, #request_string)
     ngx.req.set_header("Content-Type", "application/json")
-    
+
 end
 
 return _M
