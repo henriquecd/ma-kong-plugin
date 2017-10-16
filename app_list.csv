@@ -1,0 +1,5 @@
+# This file can be used to list the application information (appId and appKey)
+# that will be used on the Kerberos loadAPP API. The example below must be
+# changed accordingly.
+# Format: <appId>;<appKey>
+deadbeefdeadbeef;deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
