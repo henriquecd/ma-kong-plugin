@@ -45,8 +45,11 @@ function _M.hex_dump(str)
 end
 
 function _M.transform_json_body(conf, body, add_table)
+    local parameters = {}
     local content_length = (body and #body) or 0
-    local parameters = json.decode(body)
+    if content_length > 0 then
+        parameters = json.decode(body)
+    end
     if parameters == nil and content_length > 0 then
         return false, nil
     end

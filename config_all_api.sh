@@ -53,6 +53,7 @@ PAYLOAD
 
 ###### Configuring plugin
 
+
 curl -i -X POST \
     --url http://localhost:8001/apis/kerberos_registerComponent/plugins/ \
     --data 'name=mutualauthentication' \

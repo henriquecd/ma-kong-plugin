@@ -49,6 +49,9 @@ function _M.run(conf)
 
     elseif(string.match(request_uri, "requestAP")) then
         handshake.requestAP(conf)
+
+    elseif(string.match(request_uri, "loadApp")) then
+        handshake.loadApp(conf)
     end
 
 end
