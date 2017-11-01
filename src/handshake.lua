@@ -79,8 +79,6 @@ function _M.registerComponent(conf)
     req_set_body_data(body)
     req_set_header(CONTENT_LENGTH, #body)
 
-    -- TODO Send key to application
-
 end
 
 function _M.requestAS(conf)
