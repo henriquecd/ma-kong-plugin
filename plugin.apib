@@ -1,0 +1,56 @@
+FORMAT: 1A
+
+# Mutual Authentication Kong Plugin
+
+This plugin handles communication with a Mutual Authentication server.
+
+## Data Structures
+
+### appRegistry (object)
++ AppId: 0001020304050607 (string)
++ AppKey: 000102030405060708090a0b0c0d0e0f000102030405060708090a0b0c0d0e0f (string)
+
+
+# Group Kerberos
+
+### Register Component [/kerberos/registerComponent]
+
+#### Register new application [POST]
++ Response 200 (application/json)
+    + Attributes (appRegistry)
+
+### RequestAS [/kerberos/requestAS]
+
+#### Send requestAS [POST]
+Binary data from request contains cname, sname and nonce.
+Binary data from response contains sessionId, transactionId and kerberosReply.
+
++ Request (application/x-www-form-urlencoded)
+
+        [Binary data]
+
++ Response 200
+
+        [Binary data]
+
+### RequestAP [/kerberos/requestAP]
+
+#### Send requestAP [POST]
+Binary data from request contains a ticket and encrypted data.
+Binary data from response contains kerberosReply.
+
++ Request (application/x-www-form-urlencoded)
+
+        [Binary data]
+
++ Response 200
+
+        [Binary data]
+
+### Load APPs [/kerberos/loadAPP]
+
+#### Load precofigured apps [POST]
+This method tells the plugin to load the applications from the configured list.
+The application list is informed on the moment of plugin configuration.
+
++ Response 200
