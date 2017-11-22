@@ -43,7 +43,7 @@ local function modifyRegisterComponent(conf, response_body_json)
     ngx.arg[1] = response_body_string
 end
 
-local function modifyRequestAS(conf, response_body_json)
+local function modifyRequestAP(conf, response_body_json)
     -- Inserts sessionId and transactionId
     kerberosReply = response_body_json["kerberosReply"] -- Get "kerberosReply" value
     kerberosReply = string.fromhex(kerberosReply)
@@ -51,7 +51,7 @@ local function modifyRequestAS(conf, response_body_json)
     ngx.arg[1] = kerberosReply
 end
 
-local function modifyRequestAP(conf, response_body_json)
+local function modifyRequestAS(conf, response_body_json)
     -- Inserts sessionId and transactionId
     kerberosReply = response_body_json["kerberosReply"] -- Get "kerberosReply" value
     kerberosReply = string.fromhex(kerberosReply)
