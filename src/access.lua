@@ -50,20 +50,14 @@ local function validate_ma_session_id()
     local transaction_id = string.sub(ma_session_id, 33, 64)
     ma_session_id = session_id .. " - " .. transaction_id
 
-    local request_body = "{\"sessionId\":\"" .. ma_session_id .. "\"}"
+    --local request_body = "{\"sessionId\":\"" .. ma_session_id .. "\"}"
     local request_url = "http://kerberos:8080/kerberosintegration/rest/registry/session/"
-
+    request_url = request_url .. ma_session_id
     local response_body = { }
 	local res, code, response_headers, status = http.request
 	{
 	    url = request_url,
 	    method = "GET",
-        headers =
-	    {
-	    ["Content-Type"] = "application/json",
-        ["Content-Length"] = request_body:len()
-	    },
-        source = ltn12.source.string(request_body),
         sink = ltn12.sink.table(response_body),
 	}
 	util.printResponse(res, code, response_headers, status, source, sink, response_body)
