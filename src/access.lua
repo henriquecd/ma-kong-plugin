@@ -43,7 +43,7 @@ local function validate_ma_session_id()
 
     -- Format ma_session_id
     if #ma_session_id ~= MA_SESSION_ID_SIZE then
-        return responses.send(400)
+        return responses.send(400, "Invalid ma-session-id size")
     end
 
     local session_id = string.sub(ma_session_id, 1, 32)
